@@ -5,4 +5,4 @@
       "moduleResolution": "node"
     },
     "include": ["./src"]
-  }
+}
