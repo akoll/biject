@@ -32,14 +32,15 @@ type Right<T extends Pairs> = T[number][1];
 // type Left<T extends Pairs> = Domain<T>[number];
 // type Right<T extends Pairs> = Image<T>[number];
 
-type ValueOf<T extends Pairs, E> = {
+type Convert<T, From, To> = [T] extends [From] ? To : T;
+
+type ValueOf<T extends Pairs, E> = Convert<{
   [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [E, infer V] ? V : never;
-}[Index<T>];
+}[Index<T>], never, unknown>;
 
-type InverseValueOf<T extends Pairs, E> = {
+type InverseValueOf<T extends Pairs, E> = Convert<{
   [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [infer V, E] ? V : never;
-}[Index<T>];
-
+}[Index<T>], never, unknown>;
 
 // type Invert<T extends Pairs> = {
 //   [I in Exclude<keyof T, keyof []>]: Flip<T[I]>;
