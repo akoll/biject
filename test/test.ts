@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 
-import { BidirectionalMap, biject } from '../src/bijection_map';
+import { BidirectionalMap } from '../src/bidirectional_map';
+import { biject } from '../src/bijection';
 
 describe('biject', () => {
     it('returns the BidirectionalMap constructor', () => {

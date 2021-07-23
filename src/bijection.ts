@@ -1,78 +1,7 @@
-//// Array utilities.
-type First<T> = T extends readonly [infer First, ...any] ? First : never;
-type Rest<T> = T extends readonly [any, ...infer Rest] ? Rest : never;
-type Last<T> = T extends readonly [...any, infer Last] ? Last : never;
-/**
- * Analogous to lodash's `initial` function.
- */
-type Initial<T> = T extends readonly [...infer Initial, any] ? Initial : never;
+import { Pairs, ImageElement, DomainElement } from './utility/pairs';
+import { First, Rest } from './utility/tuple';
+import { BidirectionalMap } from './bidirectional_map';
 
-type Index<T extends readonly any[]> = Exclude<keyof T, keyof any[]>;
-type IndexOf<T extends readonly any[], E> = {
-  [I in Index<T>]: T[I] extends E ? I : never;
-}[Index<T>];
-
-
-// type Distinct<T extends readonly any[]> = T extends [] ? [] : (IndexOf<Rest<T>, First<T>> extends never ? [First<T>, ...Distinct<Rest<T>>] : Distinct<Rest<T>>);
-type Distinct<T> = T extends readonly [] ? T : (IndexOf<Initial<T>, Last<T>> extends never ? [...Distinct<Initial<T>>, Last<T>] : Distinct<Initial<T>>);
-
-//// Pair utilities.
-type Pair = readonly [any, any];
-type Pairs = readonly Pair[];
-type Flip<T> = T extends readonly [infer Left, infer Right] ? readonly [Right, Left] : never;
-
-type Domain<T> = T extends readonly [] ? T : (T extends readonly [readonly [infer V, any], ...any] ? readonly [V, ...Domain<Rest<T>>] : never);
-type DomainElement<T extends Pairs> = T[number][0];
-
-type Image<T> = T extends readonly [] ? T : (T extends readonly [readonly [any, infer V], ...any] ? readonly [V, ...Image<Rest<T>>] : never);
-type ImageElement<T extends Pairs> = T[number][1];
-
-type Left<T extends Pairs> = T[number][0];
-type Right<T extends Pairs> = T[number][1];
-// type Left<T extends Pairs> = Domain<T>[number];
-// type Right<T extends Pairs> = Image<T>[number];
-
-type Convert<T, From, To> = [T] extends [From] ? To : T;
-
-type ValueOf<T extends Pairs, E> = Convert<{
-  [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [E, infer V] ? V : never;
-}[Index<T>], never, unknown>;
-
-type InverseValueOf<T extends Pairs, E> = Convert<{
-  [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [infer V, E] ? V : never;
-}[Index<T>], never, unknown>;
-
-// type Invert<T extends Pairs> = {
-//   [I in Exclude<keyof T, keyof []>]: Flip<T[I]>;
-// } & Flip<T[number]>[];
-type Invert<T extends Pairs> = T extends readonly [] ? T : (T extends readonly [readonly [infer Left, infer Right], ...infer Rest] ? readonly [[Right, Left], ...(Rest extends Pairs ? Invert<Rest> : never)] : never);
-
-function invert<T extends Pairs>(pairs: T): Invert<T> {
-  return pairs.map(([left, right]) => <const>[right, left]) as Invert<T>;
-}
-
-//// Bidi map.
-
-export class BidirectionalMap<T extends Pairs> {
-  private image: Map<Left<T>, Right<T>>;
-  // private domain: Map<Left<Invert<T>>, Right<Invert<T>>>;
-  private domain: Map<Right<T>, Left<T>>;
-
-  constructor(pairs: T) {
-    this.image = new Map(pairs);
-    this.domain = new Map(invert(pairs));
-  }
-
-  getImage<Element extends Left<T>>(element: Element): ValueOf<T, Element> {
-    return this.image.get(element) as ValueOf<T, Element>;
-  }
-
-  getDomain<Element extends Right<T>>(element: Element): InverseValueOf<T, Element> {
-    return this.domain.get(element) as InverseValueOf<T, Element>;
-  }
-}
-
-//// Set utilities.
 type SurjectiveMap<Present, Missing> = {
   [i: number]: readonly [any, Missing];
 }
@@ -81,6 +10,8 @@ type InjectiveMap<Present, Missing> = {
   [i: number]: readonly [Missing, any];
   // [I in Index<T>]: T[I] extends readonly [(Subtract<Domain<T>, Distinct<Domain<T>>> extends readonly any[] ? Subtract<Domain<T>, Distinct<Domain<T>>>[number] : never), any] ? readonly [Missing, any] : T[I];
 }
+
+//// Set utilities.
 
 // type Somewhere<Ts, T> = Ts extends readonly [any] ? readonly [[T, any]] : readonly [[T, any], ...Rest<Ts>] | readonly [First<Ts>, ...Somewhere<Rest<Ts>, T>];
 
@@ -103,7 +34,6 @@ type AssertInjectiveness<T extends Pairs, Domain> = [Domain] extends [DomainElem
 // type BuildTuple<V, L extends number, DepthLimit extends number = 20, T extends readonly any[] = readonly []> = T extends { length: DepthLimit } ? readonly V[] & { length: L } : (T extends { length: L } ? T : BuildTuple<V, L, DepthLimit, readonly [...T, V]>);
 
 // NOTE: Only <const> arrays allowed.
-// TODO: Only allow tuples that have no duplicates (set-like).
 export function biject<Domain, Codomain>() {
   // return BidirectionalMap as new <T extends readonly (readonly [Domain[number], Codomain[number]])[]>(
   return BidirectionalMap as new <T extends readonly (readonly [Domain, Codomain])[]>(
@@ -151,13 +81,3 @@ export function biject<Domain, Codomain>() {
 // );
 
 // const lel: Complete<[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-
-
-/////
-const testBi = new (biject<'a' | 'b' | 5, 1 | 2 | 5>())(
-  <const>[
-    ['a', 1],
-    ['b', 5],
-    [5, 2]
-  ]
-);
