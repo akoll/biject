@@ -87,9 +87,9 @@ type Remove<Ts, T> = First<Ts> extends T ? Rest<Ts> : [First<Ts>, ...Remove<Rest
 type Subtract<Minuend, Subtrahend> = Subtrahend extends readonly [] ? Minuend : Subtract<Remove<Minuend, First<Subtrahend>>, Rest<Subtrahend>>;
 
 // type AssertInjectiveness<T extends Pairs> = Distinct<Image<T>> extends Image<T> ? T : never;
-type AssertSurjectiveness<T extends Pairs, Codomain extends readonly any[]> = Codomain[number] extends ImageElement<T> ? T : SurjectiveMap<ImageElement<T>, Exclude<Codomain[number], ImageElement<T>>>;
+type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [ImageElement<T>] ? T : SurjectiveMap<ImageElement<T>, Exclude<Codomain, ImageElement<T>>>;
 // NOTE: Technically does not determine injectiveness, only if cardinality is correct.
-type AssertInjectiveness<T extends Pairs, Definition extends readonly any[]> = Definition[number] extends DomainElement<T> ? T : InjectiveMap<DomainElement<T>,Exclude<Definition[number], DomainElement<T>>>;
+type AssertInjectiveness<T extends Pairs, Domain> = [Domain] extends [DomainElement<T>] ? T : InjectiveMap<Extract<DomainElement<T>, Domain>, Exclude<Domain, DomainElement<T>>>;
 
 ////
 // Explicit tuple builder (quickly hits instantiation depth limit).
@@ -103,10 +103,10 @@ type AssertInjectiveness<T extends Pairs, Definition extends readonly any[]> = D
 
 // NOTE: Only <const> arrays allowed.
 // TODO: Only allow tuples that have no duplicates (set-like).
-export function biject<Domain extends readonly any[], Codomain extends readonly any[] & { length: Domain['length'] }>() {
+export function biject<Domain, Codomain>() {
   // return BidirectionalMap as new <T extends readonly (readonly [Domain[number], Codomain[number]])[]>(
-  return BidirectionalMap as new <T extends readonly (readonly [Domain[number], Codomain[number]])[] & { length: Domain['length'] }>(
-    pairs: AssertInjectiveness<T, Domain> & AssertSurjectiveness<T, Codomain>,
+  return BidirectionalMap as new <T extends readonly (readonly [Domain, Codomain])[]>(
+    pairs: AssertInjectiveness<T, Domain> & AssertSurjectiveness<T, Codomain>
   ) => BidirectionalMap<T>;
 }
 
@@ -153,24 +153,10 @@ export function biject<Domain extends readonly any[], Codomain extends readonly 
 
 
 /////
-import { UnionToTuple } from './union_to_tuple';
-
-type Kek = ['a', 'b', 'c'];
-
-enum Lel {
-  FIRST,
-  SECOND,
-  THIRD,
-}
-
-const test2 = new (biject<Kek, UnionToTuple<Lel>>())(<const>[
-  ['a', Lel.FIRST],
-  ['b', Lel.SECOND],
-  ['c', Lel.THIRD],
-]);
-
-type Test3 = ['kek', 'lel'];
-const test3 = new (biject<Test3, Test3>())(<const>[
-  ['kek', 'lel'],
-  ['lel', 'kek'],
-]);
+const testBi = new (biject<'a' | 'b' | 5, 1 | 2 | 5>())(
+  <const>[
+    ['a', 1],
+    ['b', 5],
+    [5, 2]
+  ]
+);
