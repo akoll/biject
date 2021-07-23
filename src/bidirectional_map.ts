@@ -29,11 +29,11 @@ export class BidirectionalMap<T extends Pairs> {
     this.domain = new Map<Right<T>, Left<T>>(invert(pairs));
   }
 
-  getImage<Element extends Left<T>>(element: Element): ValueOf<T, Element> {
+  map<Element extends Left<T>>(element: Element): ValueOf<T, Element> {
     return this.image.get(element) as ValueOf<T, Element>;
   }
 
-  getDomain<Element extends Right<T>>(element: Element): InverseValueOf<T, Element> {
+  invert<Element extends Right<T>>(element: Element): InverseValueOf<T, Element> {
     return this.domain.get(element) as InverseValueOf<T, Element>;
   }
 }

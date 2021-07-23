@@ -20,7 +20,7 @@ describe('biject', () => {
         ['b', 1],
       ],
     );
-    const element: 2 = bijection.getImage('c');
+    const element: 2 = bijection.map('c');
     expect(element).to.equal(2);
   });
 
@@ -32,7 +32,7 @@ describe('biject', () => {
         ['b', 1],
       ],
     );
-    const element: 'b' = bijection.getDomain(1);
+    const element: 'b' = bijection.invert(1);
     expect(element).to.equal('b');
   });
 
@@ -44,7 +44,7 @@ describe('biject', () => {
         ['b', 1],
       ],
     );
-    const element = bijection.getImage('c');
+    const element = bijection.map('c');
     expect(element).to.equal(2);
 
     type Equals<T, V> = [T] extends [V] ? [V] extends [T] ? true : false : false;
@@ -60,7 +60,7 @@ describe('biject', () => {
         ['b', 1],
       ],
     );
-    const element = bijection.getDomain(1);
+    const element = bijection.invert(1);
     expect(element).to.equal('b');
 
     type Equals<T, V> = [T] extends [V] ? [V] extends [T] ? true : false : false;

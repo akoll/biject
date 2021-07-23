@@ -1,6 +1,6 @@
 {
   "name": "biject",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha --require ts-node/register test/**/*.ts",
