@@ -1,0 +1,1 @@
+# TypeScript Bijective Mapping Utilities
