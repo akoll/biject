@@ -36,7 +36,7 @@ describe('biject', () => {
         expect(element).to.equal('b');
     });
 
-    it('makes no assumptions about the image type on non-<const> maps', () => {
+    it('makes no assumptions about the image element type on non-<const> maps', () => {
         const bijection = new (biject<'a' | 'b' | 'c', 1 | 2 | 3>())(
             [
                 ['a', 3],
@@ -47,12 +47,12 @@ describe('biject', () => {
         const element = bijection.getImage('c');
         expect(element).to.equal(2);
 
-        type IsUnknown<T> = T extends unknown ? unknown extends T ? true : false : false;
-        const elementTypeUnknown: IsUnknown<typeof element> = true;
+        type Equals<T, V> = [T] extends [V] ? [V] extends [T] ? true : false : false;
+        const elementTypeUnknown: Equals<typeof element, 1 | 2 | 3> = true;
         expect(elementTypeUnknown).to.equal(true)
     });
 
-    it('makes no assumptions about the domain type on non-<const> maps', () => {
+    it('makes no assumptions about the domain element type on non-<const> maps', () => {
         const bijection = new (biject<'a' | 'b' | 'c', 1 | 2 | 3>())(
             [
                 ['a', 3],
@@ -63,8 +63,8 @@ describe('biject', () => {
         const element = bijection.getDomain(1);
         expect(element).to.equal('b');
 
-        type IsUnknown<T> = T extends unknown ? unknown extends T ? true : false : false;
-        const elementTypeUnknown: IsUnknown<typeof element> = true;
+        type Equals<T, V> = [T] extends [V] ? [V] extends [T] ? true : false : false;
+        const elementTypeUnknown: Equals<typeof element, 'a'| 'b' | 'c'> = true;
         expect(elementTypeUnknown).to.equal(true)
     });
 });

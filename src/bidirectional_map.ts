@@ -14,11 +14,11 @@ type Convert<T, From, To> = [T] extends [From] ? To : T;
 
 type ValueOf<T extends Pairs, E> = Convert<{
   [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [E, infer V] ? V : never;
-}[Index<T>], never, unknown>;
+}[Index<T>], never, Right<T>>;
 
 type InverseValueOf<T extends Pairs, E> = Convert<{
   [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [infer V, E] ? V : never;
-}[Index<T>], never, unknown>;
+}[Index<T>], never, Left<T>>;
 
 export class BidirectionalMap<T extends Pairs> {
   private image: Map<Left<T>, Right<T>>;
