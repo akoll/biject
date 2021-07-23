@@ -2,13 +2,8 @@ import { Pairs, ImageElement, DomainElement } from './utility/pairs';
 import { First, Rest } from './utility/tuple';
 import { BidirectionalMap } from './bidirectional_map';
 
-type SurjectiveMap<Present, Missing> = {
-  [i: number]: readonly [any, Missing];
-}
-
-type InjectiveMap<Present, Missing> = {
-  [i: number]: readonly [Missing, any];
-}
+type SurjectiveMap<Present, Missing> = readonly (readonly [any, Missing])[];
+type InjectiveMap<Present, Missing> = readonly (readonly [Missing, any])[];
 
 type Remove<Ts, T> = First<Ts> extends T ? Rest<Ts> : [First<Ts>, ...Remove<Rest<Ts>, T>];
 type Subtract<Minuend, Subtrahend> = Subtrahend extends readonly [] ? Minuend : Subtract<Remove<Minuend, First<Subtrahend>>, Rest<Subtrahend>>;
