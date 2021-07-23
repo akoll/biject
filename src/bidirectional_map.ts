@@ -13,11 +13,11 @@ function invert<T extends Pairs>(pairs: T): Invert<T> {
 type Convert<T, From, To> = [T] extends [From] ? To : T;
 
 type ValueOf<T extends Pairs, E> = Convert<{
-  [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [E, infer V] ? V : never;
+  [I in Exclude<keyof T, keyof unknown[]>]: T[I] extends readonly [E, infer V] ? V : never;
 }[Index<T>], never, Right<T>>;
 
 type InverseValueOf<T extends Pairs, E> = Convert<{
-  [I in Exclude<keyof T, keyof any[]>]: T[I] extends readonly [infer V, E] ? V : never;
+  [I in Exclude<keyof T, keyof unknown[]>]: T[I] extends readonly [infer V, E] ? V : never;
 }[Index<T>], never, Left<T>>;
 
 export class BidirectionalMap<T extends Pairs> {
@@ -25,8 +25,8 @@ export class BidirectionalMap<T extends Pairs> {
   private domain: Map<Right<T>, Left<T>>;
 
   constructor(pairs: T) {
-    this.image = new Map(pairs);
-    this.domain = new Map(invert(pairs));
+    this.image = new Map<Left<T>, Right<T>>(pairs);
+    this.domain = new Map<Right<T>, Left<T>>(invert(pairs));
   }
 
   getImage<Element extends Left<T>>(element: Element): ValueOf<T, Element> {

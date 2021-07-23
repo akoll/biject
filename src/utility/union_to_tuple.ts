@@ -1,18 +1,18 @@
 export type UnionToTuple<T> = (
+  (
     (
-        (
-            T extends any
-                ? (t: T) => T
-                : never
-        ) extends infer U
-            ? (U extends any
-                ? (u: U) => any
-                : never
-            ) extends (v: infer V) => any
-                ? V
-                : never
-            : never
-    ) extends (_: any) => infer W
-        ? [...UnionToTuple<Exclude<T, W>>, W]
-        : []
+      T extends unknown
+        ? (t: T) => T
+        : never
+    ) extends infer U
+      ? (U extends unknown
+        ? (u: U) => unknown
+        : never
+      ) extends (v: infer V) => unknown
+        ? V
+        : never
+      : never
+  ) extends (_: never) => infer W
+    ? [...UnionToTuple<Exclude<T, W>>, W]
+    : []
 );

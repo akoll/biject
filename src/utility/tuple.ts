@@ -1,14 +1,14 @@
-export type First<T> = T extends readonly [infer First, ...any] ? First : never;
-export type Rest<T> = T extends readonly [any, ...infer Rest] ? Rest : never;
-export type Last<T> = T extends readonly [...any, infer Last] ? Last : never;
+export type First<T> = T extends readonly [infer First, ...unknown[]] ? First : never;
+export type Rest<T> = T extends readonly [unknown, ...infer Rest] ? Rest : never;
+export type Last<T> = T extends readonly [...unknown[], infer Last] ? Last : never;
 
 /**
  * Analogous to lodash's `initial` function.
  */
-export type Initial<T> = T extends readonly [...infer Initial, any] ? Initial : never;
+export type Initial<T> = T extends readonly [...infer Initial, unknown] ? Initial : never;
 
-export type Index<T extends readonly any[]> = Exclude<keyof T, keyof any[]>;
-export type IndexOf<T extends readonly any[], E> = {
+export type Index<T extends readonly unknown[]> = Exclude<keyof T, keyof unknown[]>;
+export type IndexOf<T extends readonly unknown[], E> = {
   [I in Index<T>]: T[I] extends E ? I : never;
 }[Index<T>];
 
