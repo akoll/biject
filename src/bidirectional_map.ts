@@ -22,7 +22,6 @@ type InverseValueOf<T extends Pairs, E> = Convert<{
 
 export class BidirectionalMap<T extends Pairs> {
   private image: Map<Left<T>, Right<T>>;
-  // private domain: Map<Left<Invert<T>>, Right<Invert<T>>>;
   private domain: Map<Right<T>, Left<T>>;
 
   constructor(pairs: T) {
