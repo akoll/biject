@@ -99,12 +99,13 @@ type AssertInjectiveness<T extends Pairs, Definition extends readonly any[]> = D
 // type BuildTuple<V, L extends number, T extends readonly any[] = readonly []> = readonly V[] & { length: L };
 
 // Hybrid tuple builder with depth-limited explicit building before falling back to loose building.
-type BuildTuple<V, L extends number, DepthLimit extends number = 20, T extends readonly any[] = readonly []> = T extends { length: DepthLimit } ? readonly V[] & { length: L } : (T extends { length: L } ? T : BuildTuple<V, L, DepthLimit, readonly [...T, V]>);
+// type BuildTuple<V, L extends number, DepthLimit extends number = 20, T extends readonly any[] = readonly []> = T extends { length: DepthLimit } ? readonly V[] & { length: L } : (T extends { length: L } ? T : BuildTuple<V, L, DepthLimit, readonly [...T, V]>);
 
 // NOTE: Only <const> arrays allowed.
+// TODO: Only allow tuples that have no duplicates (set-like).
 export function biject<Domain extends readonly any[], Codomain extends readonly any[] & { length: Domain['length'] }>() {
   // return BidirectionalMap as new <T extends readonly (readonly [Domain[number], Codomain[number]])[]>(
-  return BidirectionalMap as new <T extends BuildTuple<readonly [Domain[number], Codomain[number]], Domain['length']>>(
+  return BidirectionalMap as new <T extends readonly (readonly [Domain[number], Codomain[number]])[] & { length: Domain['length'] }>(
     pairs: AssertInjectiveness<T, Domain> & AssertSurjectiveness<T, Codomain>,
   ) => BidirectionalMap<T>;
 }
@@ -152,6 +153,7 @@ export function biject<Domain extends readonly any[], Codomain extends readonly 
 
 
 /////
+import { UnionToTuple } from './union_to_tuple';
 
 type Kek = ['a', 'b', 'c'];
 
@@ -161,12 +163,14 @@ enum Lel {
   THIRD,
 }
 
-type Test = UnionToTuple<Lel>;
+const test2 = new (biject<Kek, UnionToTuple<Lel>>())(<const>[
+  ['a', Lel.FIRST],
+  ['b', Lel.SECOND],
+  ['c', Lel.THIRD],
+]);
 
-// const test2 = new (biject<Kek[number], Lel>())(<const>[
-//   ['a', Lel.FIRST],
-//   ['b', Lel.SECOND],
-//   ['c', Lel.THIRD],
-// ]);
-
-import { UnionToTuple } from './union_to_tuple';
+type Test3 = ['kek', 'lel'];
+const test3 = new (biject<Test3, Test3>())(<const>[
+  ['kek', 'lel'],
+  ['lel', 'kek'],
+]);
