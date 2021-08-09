@@ -2,8 +2,8 @@ import { expect } from 'chai';
 
 import { BidirectionalMap } from '../src/bidirectional_map';
 import { biject } from '../src/bijection';
+import { Equals } from '../src/utility/equals';
 
-type Equals<T, V> = [T] extends [V] ? [V] extends [T] ? true : false : false;
 
 describe('biject', () => {
   it('returns the BidirectionalMap constructor', () => {
