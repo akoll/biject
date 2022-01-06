@@ -1,15 +1,12 @@
-import type { Pairs, ImageElement, DomainElement, Domain, Image } from './utility/pairs';
-import type { Distinct } from './utility/tuple';
+import { Pairs, ImageElement, DomainElement } from './utility/pairs';
+import { First, Rest } from './utility/tuple';
 import { BidirectionalMap } from './bidirectional_map';
-import type { Equals } from './utility/equals';
 
 type SurjectiveMap<Present, Missing> = readonly (readonly [unknown, Missing])[];
 type InjectiveMap<Present, Missing> = readonly (readonly [Missing, unknown])[];
 
-type AssertSet<T extends readonly unknown[]> = Equals<T, Distinct<T>>;
-type AssertEqualCardinality<T extends Pairs> =
-  AssertSet<Domain<T>> extends false ? 'Domain is not a valid set (contains duplicates).' :
-  AssertSet<Image<T>> extends false ? 'Image is not a valid set (contains duplicates).' : T;
+type Remove<Ts, T> = First<Ts> extends T ? Rest<Ts> : [First<Ts>, ...Remove<Rest<Ts>, T>];
+type Subtract<Minuend, Subtrahend> = Subtrahend extends readonly [] ? Minuend : Subtract<Remove<Minuend, First<Subtrahend>>, Rest<Subtrahend>>;
 
 type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [ImageElement<T>] ? T : SurjectiveMap<ImageElement<T>, Exclude<Codomain, ImageElement<T>>>;
 
@@ -18,6 +15,6 @@ type AssertInjectiveness<T extends Pairs, Domain> = [Domain] extends [DomainElem
 
 export function biject<Domain, Codomain>() {
   return BidirectionalMap as new <T extends readonly (readonly [Domain, Codomain])[]>(
-    pairs: AssertEqualCardinality<T> &  AssertInjectiveness<T, Domain> & AssertSurjectiveness<T, Codomain>
+    pairs: AssertInjectiveness<T, Domain> & AssertSurjectiveness<T, Codomain>
   ) => BidirectionalMap<T>;
 }

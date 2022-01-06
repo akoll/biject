@@ -18,22 +18,9 @@ describe('biject', () => {
 
   it('asserts equal set cardinality', () => {
     new (
+      // @ts-expect-error Set cardinalities don't match.
       biject<'a' | 'b', 1 | 2 | 3>()
-    // @ts-expect-error Domain contains duplicates.
-    )(<const>[
-      ['a', 1],
-      ['b', 2],
-      ['a', 3],
-    ]);
-
-    new (
-      biject<'a' | 'b' | 'c', 1 | 2>()
-    // @ts-expect-error Image contains duplicates.
-    )(<const>[
-      ['a', 1],
-      ['b', 2],
-      ['c', 1],
-    ]);
+    )([]);
   });
 
   it('asserts injectiveness', () => {
@@ -61,6 +48,16 @@ describe('biject', () => {
       <const>[
         ['a', 1],
         ['b', 2],
+      ]
+    );
+
+    // @ts-expect-error Set cardinalities don't match.
+    new (biject<'a' | 'b', 1 | 2 | 3>())(
+      // But the map is surjective.
+      <const>[
+        ['a', 1],
+        ['b', 2],
+        ['b', 3],
       ]
     );
   });
