@@ -2,11 +2,11 @@
   "name": "biject",
   "version": "2.0.0",
   "author": "akoll",
-  "main": "dist/index.js",
   "scripts": {
     "test": "mocha --require ts-node/register test/**/*.ts",
-    "build": "tsc --declaration"
+    "build": "tsc"
   },
+  "main": "dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "./dist"
