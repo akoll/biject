@@ -16,15 +16,39 @@ describe('biject', () => {
     ).to.equal(BidirectionalMap);
   });
 
-  it('asserts equal set cardinality', () => {
-    new (
-      // @ts-expect-error Set cardinalities don't match.
-      biject<'a' | 'b', 1 | 2 | 3>()
-    )([]);
+  it('asserts map to be a valid function', () => {
+    new (biject<1 | 2, 'a' | 'b' | 'c'>())(
+      // @ts-expect-error Given map is not a valid function.
+      <const>[
+        [1, 'c'],
+        [2, 'a'],
+        [1, 'b'],
+      ]
+    );
+
+    new (biject<1 | 2 | 3, 'a' | 'b' | 'c' | 'd' | 'e'>())(
+      // @ts-expect-error Given map is not a valid function.
+      <const>[
+        [1, 'c'],
+        [2, 'a'],
+        [3, 'e'],
+        [1, 'b'],
+        [3, 'd'],
+      ]
+    );
   });
 
   it('asserts injectiveness', () => {
     new (biject<'a' | 'b' | 'c', 1 | 2 | 3>())(
+      // @ts-expect-error Given map is not injective.
+      <const>[
+        ['a', 1],
+        ['b', 2],
+        ['c', 1],
+      ]
+    );
+
+    new (biject<'a' | 'b' | 'c', 1 | 2>())(
       // @ts-expect-error Given map is not injective.
       <const>[
         ['a', 1],
@@ -48,16 +72,6 @@ describe('biject', () => {
       <const>[
         ['a', 1],
         ['b', 2],
-      ]
-    );
-
-    // @ts-expect-error Set cardinalities don't match.
-    new (biject<'a' | 'b', 1 | 2 | 3>())(
-      // But the map is surjective.
-      <const>[
-        ['a', 1],
-        ['b', 2],
-        ['b', 3],
       ]
     );
   });
