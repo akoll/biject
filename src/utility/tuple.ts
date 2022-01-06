@@ -15,4 +15,5 @@ export type IndexOf<T extends readonly unknown[], E> = {
   [I in Index<T>]: T[I] extends E ? I : never;
 }[Index<T>];
 
-export type Distinct<T extends readonly unknown[]> = T extends readonly [] ? T : (IndexOf<Initial<T>, Last<T>> extends never ? readonly [...Distinct<Initial<T>>, Last<T>] : Distinct<Initial<T>>);
+// export type Distinct<T extends readonly unknown[]> = T extends readonly [] ? T : (IndexOf<Initial<T>, Last<T>> extends never ? readonly [...Distinct<Initial<T>>, Last<T>] : Distinct<Initial<T>>);
+export type Distinct<T extends readonly unknown[], Accumulator extends readonly unknown[] = readonly []> = T extends readonly [] ? Accumulator : (IndexOf<Initial<T>, Last<T>> extends never ? Distinct<Initial<T>, readonly [Last<T>, ...Accumulator]> : Distinct<Initial<T>, Accumulator>);
