@@ -2,9 +2,6 @@ import { Pairs, ImageElement, DomainElement } from './utility/pairs';
 import { First, Rest, Unique } from './utility/tuple';
 import { BidirectionalMap } from './bidirectional_map';
 
-type Remove<Ts, T> = First<Ts> extends T ? Rest<Ts> : [First<Ts>, ...Remove<Rest<Ts>, T>];
-type Subtract<Minuend, Subtrahend> = Subtrahend extends readonly [] ? Minuend : Subtract<Remove<Minuend, First<Subtrahend>>, Rest<Subtrahend>>;
-
 // NOTE: Technically does not determine injectiveness, only if cardinality is correct.
 // type AssertInjectiveness<T extends Pairs, Domain> = [Domain] extends [DomainElement<T>] ? T : InjectiveMap<Extract<DomainElement<T>, Domain>, Exclude<Domain, DomainElement<T>>>;
 

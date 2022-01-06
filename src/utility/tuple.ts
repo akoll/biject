@@ -19,3 +19,6 @@ export type Filter<T extends readonly unknown[], Criterion, Accumulator extends 
 export type Unique<T extends readonly unknown[], Criterion> = Equals<Filter<T, Criterion>['length'], 1>;
 
 export type Distinct<T> = T extends readonly [] ? T : (IndexOf<Initial<T>, Last<T>> extends never ? [...Distinct<Initial<T>>, Last<T>] : Distinct<Initial<T>>);
+
+export type Remove<Ts, T> = First<Ts> extends T ? Rest<Ts> : readonly [First<Ts>, ...Remove<Rest<Ts>, T>];
+export type Subtract<Minuend, Subtrahend> = Subtrahend extends readonly [] ? Minuend : Subtract<Remove<Minuend, First<Subtrahend>>, Rest<Subtrahend>>;
