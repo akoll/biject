@@ -50,19 +50,45 @@ type InverseValueOf<T extends Pairs, E> = Convert<{
   [I in Exclude<keyof T, keyof unknown[]>]: T[I] extends readonly [infer V, E] ? V : never;
 }[Index<T>], never, DomainElement<T>>;
 
+/**
+ * Map that supports querying in both directions.
+ * @template T Type of the map's pair array.
+ */
 export class BidirectionalMap<T extends Pairs> {
+  /**
+   * Underlying map from left to right.
+   * @remarks Sets up querying from the input pairs' left side to its right side.
+   */
   private image: Map<DomainElement<T>, ImageElement<T>>;
+
+  /**
+   * Underlying map from right to left.
+   * @remarks Sets up querying from the input pairs' right side to its left side.
+   */
   private domain: Map<ImageElement<T>, DomainElement<T>>;
 
+  /**
+   * @param pairs Array of pairs to construct the map with.
+   */
   constructor(pairs: T) {
     this.image = new Map<DomainElement<T>, ImageElement<T>>(pairs);
     this.domain = new Map<ImageElement<T>, DomainElement<T>>(invert(pairs));
   }
 
+  /**
+   * Gets the right-side value associated to the left-side value {@link element}.
+   * @param element Left-side element to search for.
+   * @returns The right-side value associated to the left-side value {@link element}.
+   */
   map<Element extends DomainElement<T>>(element: Element): ValueOf<T, Element> {
     return this.image.get(element) as ValueOf<T, Element>;
   }
 
+  /**
+   * Gets the left-side value associated to the right-side value {@link element}.
+   * @param element Right-side element to search for.
+   * @returns The left-side value associated to the right-side value {@link element}.
+   */
   invert<Element extends ImageElement<T>>(element: Element): InverseValueOf<T, Element> {
     return this.domain.get(element) as InverseValueOf<T, Element>;
   }
