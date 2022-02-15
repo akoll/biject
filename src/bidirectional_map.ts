@@ -15,7 +15,7 @@ type Invert<T extends Pairs> = T extends readonly [] ? T : (T extends readonly [
  * @template T Type of pairs to invert.
  * @param pairs Pairs to invert.
  * @returns The pairs inverted (left and right side of each pair swapped).
- * @example invert([[1, 'a'], [2, 'b']]) // [['a', 1], ['b', 2]]
+ * @example invert([[1, 'a'], [2, 'b']]) // => [['a', 1], ['b', 2]]
  */
 function invert<T extends Pairs>(pairs: T): Invert<T> {
   return pairs.map(([left, right]) => <const>[right, left]) as Invert<T>;
