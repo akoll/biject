@@ -1,6 +1,7 @@
 # Biject
 Type-safe compile-time bijective maps for TypeScript.
-[![NPM Version][https://img.shields.io/npm/v/biject.svg]][https://www.npmjs.com/package/biject]
+
+[![NPM Version](https://img.shields.io/npm/v/biject.svg)](https://www.npmjs.com/package/biject)
 
 ```typescript
 import { biject } from 'biject';
