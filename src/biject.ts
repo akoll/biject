@@ -63,24 +63,26 @@ type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [Image
 
 /**
  * Sets up a bijective map.
- * @returns A typed {@link BidirectionalMap} constructor which only allows bijective maps to be specified.
+ * @returns A {@link BidirectionalMap} of the given bijection.
  * @example new (biject())(<const>[[2, 'a'], [1, 'b']])
  */
-export function biject(): new <T extends readonly (readonly [unknown, unknown])[]>(
+export function biject<T extends Pairs>(
   pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, ImageElement<T>>
-) => BidirectionalMap<T>;
+): BidirectionalMap<T>;
 
 /**
  * Sets up a bijective map between two given sets.
  * @template Domain The domain (left side) of the map given as a union of element types.
  * @template Codomain The codomain (right side) of the map given as a union of element types.
- * @returns A typed {@link BidirectionalMap} constructor which only allows bijective maps between {@link Domain} and {@link Codomain} to be specified.
+ * @returns A function to set up a {@link BidirectionalMap} which only allows bijective maps between {@link Domain} and {@link Codomain} to be specified.
  * @example new (biject<1 | 2, 'a' | 'b'>())(<const>[[2, 'a'], [1, 'b']])
  */
-export function biject<Domain, Codomain>(): new <T extends readonly (readonly [Domain, Codomain])[]>(
+// TODO: Once https://github.com/Microsoft/TypeScript/pull/26349 is applied, remove the unnecessary double paranthesis and infer `T` alongside `Domain` and `Codomain`.
+export function biject<Domain, Codomain>(): <T extends readonly (readonly [Domain, Codomain])[]>(
   pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, Codomain>
 ) => BidirectionalMap<T>;
 
-export function biject() {
-  return BidirectionalMap;
+export function biject<T extends Pairs>(pairs?: T) {
+  if (pairs === undefined) return <T extends Pairs>(t: T) => new BidirectionalMap(t);
+  else return new BidirectionalMap(pairs);
 }
