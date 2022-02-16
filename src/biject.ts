@@ -62,14 +62,25 @@ type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [Image
 };
 
 /**
- * Sets up a bijective map between two sets.
+ * Sets up a bijective map.
+ * @returns A typed {@link BidirectionalMap} constructor which only allows bijective maps to be specified.
+ * @example new (biject())(<const>[[2, 'a'], [1, 'b']])
+ */
+export function biject(): new <T extends readonly (readonly [unknown, unknown])[]>(
+  pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, ImageElement<T>>
+) => BidirectionalMap<T>;
+
+/**
+ * Sets up a bijective map between two given sets.
  * @template Domain The domain (left side) of the map given as a union of element types.
  * @template Codomain The codomain (right side) of the map given as a union of element types.
- * @returns A typed {@link BidirectionalMap} constructor which only allows bijective maps to be specified.
+ * @returns A typed {@link BidirectionalMap} constructor which only allows bijective maps between {@link Domain} and {@link Codomain} to be specified.
  * @example new (biject<1 | 2, 'a' | 'b'>())(<const>[[2, 'a'], [1, 'b']])
  */
-export function biject<Domain, Codomain>() {
-  return BidirectionalMap as new <T extends readonly (readonly [Domain, Codomain])[]>(
-    pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, Codomain>
-  ) => BidirectionalMap<T>;
+export function biject<Domain, Codomain>(): new <T extends readonly (readonly [Domain, Codomain])[]>(
+  pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, Codomain>
+) => BidirectionalMap<T>;
+
+export function biject() {
+  return BidirectionalMap;
 }
