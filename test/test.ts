@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { BidirectionalMap } from '../src/bidirectional_map';
-import { biject } from '../src/bijection';
+import { biject } from '../src/biject';
 import { Equals } from '../src/utility/equals';
 
 

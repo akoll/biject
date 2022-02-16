@@ -1,5 +1,5 @@
-import { biject } from './bijection';
+import { biject } from './biject';
 
 export * from './bidirectional_map';
-export * from './bijection';
+export * from './biject';
 export default biject;
