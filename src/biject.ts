@@ -61,13 +61,17 @@ type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [Image
   'Some image elements are missing (function is not surjective)': Exclude<Codomain, ImageElement<T>>;
 };
 
+type AssertFixedLength<T extends readonly unknown[]> = number extends T['length'] ? {
+  readonly 'Failed to infer map size. Perhaps you are missing <const> or types are imprecise.': unique symbol;
+} : T;
+
 /**
  * Sets up a bijective map.
  * @returns A {@link BidirectionalMap} of the given bijection.
  * @example new (biject())(<const>[[2, 'a'], [1, 'b']])
  */
 export function biject<T extends Pairs>(
-  pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, ImageElement<T>>
+  pairs: AssertFixedLength<T> & AssertFunction<T> & AssertInjectiveness<T>
 ): BidirectionalMap<T>;
 
 /**
@@ -79,10 +83,10 @@ export function biject<T extends Pairs>(
  */
 // TODO: Once https://github.com/Microsoft/TypeScript/pull/26349 is applied, remove the unnecessary double paranthesis and infer `T` alongside `Domain` and `Codomain`.
 export function biject<Domain, Codomain>(): <T extends readonly (readonly [Domain, Codomain])[]>(
-  pairs: AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, Codomain>
+  pairs: AssertFixedLength<T> & AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, Codomain>
 ) => BidirectionalMap<T>;
 
 export function biject<T extends Pairs>(pairs?: T) {
-  if (pairs === undefined) return <T extends Pairs>(t: T) => new BidirectionalMap(t);
+  if (pairs === undefined) return (pairs: T) => new BidirectionalMap(pairs);
   else return new BidirectionalMap(pairs);
 }
