@@ -144,7 +144,7 @@ describe('biject', () => {
 
   it('disallows intersections on imprecise maps', () => {
     const union = 1 as 1 | 2;
-    const bijection = biject(
+    biject(
       // @ts-expect-error 2 is mapped twice.
       <const>[
         [union, 5],
@@ -153,19 +153,36 @@ describe('biject', () => {
     );
   });
 
-  it('returns unknown on imprecise maps', () => {
-    const union = 1 as 1 | 2;
+  it('supports undefined and null', () => {
     const bijection = biject(
       <const>[
-        [union, 5],
+        [1, undefined],
+        [2, null],
+        [undefined, 3],
+        [null, 4],
       ]
     );
-    const element = bijection.map(1);
-    const elementUnknown: Equals<typeof element, unknown> = true;
-    expect(elementUnknown).to.equal(true);
-  });
 
-  it('supports null and undefined');
+    const element1: undefined = bijection.map(1);
+    expect(element1).to.equal(undefined);
+    const inverse1: 1 = bijection.invert(undefined);
+    expect(inverse1).to.equal(1);
+
+    const element2: null = bijection.map(2);
+    expect(element2).to.equal(null);
+    const inverse2: 2 = bijection.invert(null);
+    expect(inverse2).to.equal(2);
+
+    const element3: 3 = bijection.map(undefined);
+    expect(element3).to.equal(3);
+    const inverse3: undefined = bijection.invert(3);
+    expect(inverse3).to.equal(undefined);
+
+    const element4: 4 = bijection.map(null);
+    expect(element4).to.equal(4);
+    const inverse4: null = bijection.invert(4);
+    expect(inverse4).to.equal(null);
+  });
 
   it('infers the image type', () => {
     const bijection = biject<'a' | 'b' | 'c', 1 | 2 | 3>()(
