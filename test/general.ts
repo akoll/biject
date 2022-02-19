@@ -142,8 +142,19 @@ describe('biject', () => {
     );
   });
 
+  it('disallows intersections on imprecise maps', () => {
+    const union = 1 as 1 | 2;
+    const bijection = biject(
+      // @ts-expect-error 2 is mapped twice.
+      <const>[
+        [union, 5],
+        [2, 6],
+      ]
+    );
+  });
+
   it('returns unknown on imprecise maps', () => {
-    const union: 1 | 2 = 1;
+    const union = 1 as 1 | 2;
     const bijection = biject(
       <const>[
         [union, 5],
