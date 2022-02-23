@@ -37,7 +37,7 @@ type Convert<T, From, To> = [T] extends [From] ? To : T;
  * @returns Union of value types (right sides) of pairs containing the key (left side) type {@link E}.
  */
 type ValueOf<T extends Pairs, E> = Convert<{
-  [I in Index<T>]: T[I] extends readonly [E, infer V] ? ([E] extends [T[I][0]] ? V : never) : never;
+  [I in Index<T>]: T[I] extends readonly [E, infer V] ? (E extends T[I][0] ? V : never) : never;
 }[Index<T>], never, ImageElement<T>>;
 
 /**
@@ -47,7 +47,7 @@ type ValueOf<T extends Pairs, E> = Convert<{
  * @returns Union of key types (left sides) of pairs containing the value (right side) type {@link E}.
  */
 type InverseValueOf<T extends Pairs, E> = Convert<{
-  [I in Index<T>]: T[I] extends readonly [infer V, E] ? ([E] extends [T[I][1]] ? V : never) : never;
+  [I in Index<T>]: T[I] extends readonly [infer V, E] ? (E extends T[I][1] ? V : never) : never;
 }[Index<T>], never, DomainElement<T>>;
 
 /**
