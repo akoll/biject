@@ -58,11 +58,11 @@ type AssertInjectiveness<T extends Pairs> = RemoveUniqueImageElements<T> extends
 // TODO: Interpolate the violations into the error message's key (and make the value type `unique symbol`).
 type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [ImageElement<T>] ? T : {
   readonly 'The given map is not surjective.': unique symbol;
-  'Some image elements are missing (function is not surjective)': Exclude<Codomain, ImageElement<T>>;
+  'Some image elements (right side) are missing': Exclude<Codomain, ImageElement<T>>;
 };
 
 type AssertFixedLength<T extends readonly unknown[]> = number extends T['length'] ? {
-  readonly 'Failed to infer map size. Perhaps you are missing <const> or types are imprecise.': unique symbol;
+  readonly 'Failed to infer map size. Perhaps you are missing <const> or the inferred types are imprecise.': unique symbol;
 } : T;
 
 /**
