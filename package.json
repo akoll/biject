@@ -1,6 +1,7 @@
 {
   "name": "biject",
-  "version": "2.2.0",
+  "description": "Type-safe bijective maps.",
+  "version": "2.2.1",
   "author": "akoll",
   "repository": "github:akoll/biject",
   "scripts": {
