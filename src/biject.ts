@@ -33,10 +33,10 @@ type RemoveUniqueDomainElements<T extends Pairs, Current = T, Accumulator extend
  * @template T Array of pairs to evaluate.
  * @returns Type {@link T} if the mapping is functional or an opaque object type containing an error message otherwise.
  */
-// TODO: Interpolate the violations into the error message's key (and make the value type `unique symbol`).
 type AssertFunction<T extends Pairs> = RemoveUniqueDomainElements<T> extends readonly [] ? T : {
   readonly 'The given map is not a valid function.': unique symbol;
-  'Some domain elements (left side) are ambiguous (mapped more than once)': DomainElement<RemoveUniqueDomainElements<T>>;
+  'Some domain elements (left side) are ambiguous (mapped more than once).': DomainElement<RemoveUniqueDomainElements<T>>;
+  errors: `Domain element (left side) '${DomainElement<RemoveUniqueDomainElements<T>>}' is ambiguous (mapped more than once).`;
 };
 
 /**
@@ -44,10 +44,10 @@ type AssertFunction<T extends Pairs> = RemoveUniqueDomainElements<T> extends rea
  * @template T Array of pairs to evaluate.
  * @returns Type {@link T} if the mapping is injective or an opaque object type containing an error message otherwise.
  */
-// TODO: Interpolate the violations into the error message's key (and make the value type `unique symbol`).
 type AssertInjectiveness<T extends Pairs> = RemoveUniqueImageElements<T> extends readonly [] ? T : {
   readonly 'The given map is not injective.': unique symbol;
   'Some image elements (right side) are ambiguous (mapped more than once)': ImageElement<RemoveUniqueImageElements<T>>;
+  errors: `Image element (right side) '${ImageElement<RemoveUniqueImageElements<T>>}' is ambiguous (mapped more than once).`;
 };
 
 /**
@@ -55,10 +55,10 @@ type AssertInjectiveness<T extends Pairs> = RemoveUniqueImageElements<T> extends
  * @template T Array of pairs to evaluate.
  * @returns Type {@link T} if the mapping is surjective or an opaque object type containing an error message otherwise.
  */
-// TODO: Interpolate the violations into the error message's key (and make the value type `unique symbol`).
 type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [ImageElement<T>] ? T : {
   readonly 'The given map is not surjective.': unique symbol;
   'Some image elements (right side) are missing': Exclude<Codomain, ImageElement<T>>;
+  errors: `Image element (right side) '${Extract<Exclude<Codomain, ImageElement<T>>, string | number | bigint | boolean | null | undefined>}' is missing (not mapped).`;
 };
 
 type AssertFixedLength<T extends readonly unknown[]> = number extends T['length'] ? {
