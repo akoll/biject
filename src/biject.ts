@@ -61,8 +61,13 @@ type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [Image
   errors: `Image element (right side) '${Extract<Exclude<Codomain, ImageElement<T>>, string | number | bigint | boolean | null | undefined>}' is missing (not mapped).`;
 };
 
+/**
+ * Asserts that the size of the map can be inferred statically.
+ * @template T Array to evaluate for static length.
+ * @returns Type {@link T} if the map size can be determined statically or an opaque object type containing an error message otherwise.
+ */
 type AssertFixedLength<T extends readonly unknown[]> = number extends T['length'] ? {
-  readonly 'Failed to infer map size. Perhaps you are missing <const> or the inferred types are imprecise.': unique symbol;
+  readonly 'Failed to infer map size. Perhaps you are missing a const cast or the inferred types are imprecise.': unique symbol;
 } : T;
 
 /**
