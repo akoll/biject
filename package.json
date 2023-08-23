@@ -1,8 +1,9 @@
 {
   "name": "biject",
   "description": "Type-safe bijective maps.",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "author": "akoll",
+  "license": "MIT",
   "repository": "github:akoll/biject",
   "scripts": {
     "test": "mocha --require ts-node/register test/**/*.ts",
