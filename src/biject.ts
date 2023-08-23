@@ -13,7 +13,7 @@ import { BidirectionalMap } from './bidirectional_map';
  * @remarks Analogous to {@link RemoveUniqueDomainElements} but targeting the right instead of the left side of pairs.
  */
 // TODO: Make more readable.
-type RemoveUniqueImageElements<T extends Pairs, Current = T, Accumulator extends readonly unknown[] = readonly []> = Current extends readonly [] ? Accumulator : (Current extends readonly [infer First, ...infer Rest] ? (First extends readonly [unknown, infer Right] ? (Unique<T, readonly [unknown , Right]> extends false ? RemoveUniqueImageElements<T, Rest, [...Accumulator, First]> : RemoveUniqueImageElements<T, Rest, Accumulator>) : never) : never);
+type RemoveUniqueImageElements<T extends Pairs, Current = T, Accumulator extends readonly unknown[] = readonly []> = Current extends readonly [] ? Accumulator : (Current extends readonly [infer First, ...infer Rest] ? (First extends readonly [unknown, infer Right] ? (Unique<T, readonly [unknown, Right]> extends false ? RemoveUniqueImageElements<T, Rest, [...Accumulator, First]> : RemoveUniqueImageElements<T, Rest, Accumulator>) : never) : never);
 
 /**
  * Removes all pairs from an array of pairs where the left-side type of the pair does not occur on the left side of any other pairs.
