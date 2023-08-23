@@ -60,7 +60,7 @@ biject(<const>[
 ]);
 ```
 
-The type of query operations is known at compile time.
+The type of query operations is known at compile-time.
 ```typescript
 const example = biject(<const>[
   ['kek', 3141],
@@ -76,7 +76,7 @@ const kek: 'kek' = example.invert(3141);
   const mapsTo: 3141 | 927 = example.map(element);
 }
 ```
-> :warning: Correct type inferrence only works if the type of the map given to `biject` exactly represents its runtime value. This is why `<const>` is required.  
+> :warning: Correct type inferrence only works if the type of the map given to `biject` exactly represents its run-time value. This is why `<const>` is required.  
 > Make sure to not reference any values that TypeScript infers as unions.  
 > :x: Avoid:
 > ```typescript
