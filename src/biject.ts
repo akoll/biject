@@ -62,8 +62,8 @@ type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [Image
 };
 
 /**
- * Asserts that the size of the map can be inferred statically.
- * @template T Array to evaluate for static length.
+ * Asserts that the size of a map given as an array of pairs can be inferred statically.
+ * @template T Mapping array to evaluate for static length.
  * @returns Type {@link T} if the map size can be determined statically or an opaque object type containing an error message otherwise.
  */
 type AssertFixedLength<T extends readonly unknown[]> = number extends T['length'] ? {
