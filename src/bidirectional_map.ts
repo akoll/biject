@@ -76,6 +76,24 @@ export class BidirectionalMap<T extends Pairs> {
   }
 
   /**
+   * Checks if a given value is an element of the domain set.
+   * @param element Value to check.
+   * @returns `true` if {@link element} is part of the domain.
+   */
+  isInDomain(element: unknown): element is DomainElement<T> {
+    return this.image.has(element);
+  }
+
+  /**
+   * Checks if a given value is an element of the image set.
+   * @param element Value to check.
+   * @returns `true` if {@link element} is part of the image.
+   */
+  isInImage(element: unknown): element is ImageElement<T> {
+    return this.domain.has(element);
+  }
+
+  /**
    * Gets the right-side value associated to the left-side value {@link element}.
    * @param element Left-side element to search for.
    * @returns The right-side value associated to the left-side value {@link element}.

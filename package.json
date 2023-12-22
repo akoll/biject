@@ -1,7 +1,7 @@
 {
   "name": "biject",
   "description": "Type-safe bijective maps.",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "author": "akoll",
   "license": "MIT",
   "repository": "github:akoll/biject",

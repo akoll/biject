@@ -86,6 +86,30 @@ const kek: 'kek' = example.invert(3141);
 > ```
 > This might lead to run-time errors.
 
+### Type-guards
+To check if a value is part of the map's domain or codomain (image), there are type-guards available.
+```typescript
+// Define the bijection.
+const example = biject(<const>[
+  ['a', 1],
+  ['b', 2],
+  ['c', 3],
+]);
+
+// Get an unknown value from somewhere.
+const element: unknown = document.getElementById('input').value;
+
+if (example.isInDomain(element)) {
+  // The `element` can now be used in `.map`.
+  example.map(element);
+}
+
+if (example.isInImage(element)) {
+  // The `element` can now be used in `.invert`.
+  example.invert(element);
+}
+```
+
 ### Specifying sets
 The domain and codomain sets can explicitly be set as unions of elements. This will ensure that the mapping is complete and no elements have been forgotten.
 ```typescript
