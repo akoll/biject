@@ -264,6 +264,20 @@ describe('biject', () => {
     expect(bijection.isInImage(undefined)).to.be.false;
     expect(bijection.isInImage([1, 'c'])).to.be.false;
     expect(bijection.isInImage(['c', 1])).to.be.false;
+
+    const testElement1 = 3 as unknown;
+    // @ts-expect-error The unguarded element is too wide.
+    bijection.map(testElement1);
+    if (bijection.isInDomain(testElement1)) {
+      bijection.map(testElement1);
+    }
+
+    const testElement2 = 'a' as unknown;
+    // @ts-expect-error The unguarded element is too wide.
+    bijection.invert(testElement2);
+    if (bijection.isInImage(testElement2)) {
+      bijection.invert(testElement2);
+    }
   });
 
   it('handles null and undefined in type guards', () => {
