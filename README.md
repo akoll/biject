@@ -8,7 +8,7 @@ Type-safe compile-time bijective maps for [TypeScript](https://www.typescriptlan
 import { biject } from 'biject';
 
 const example = biject<1 | 2, 'a' | 'b'>()(
-  <const>[
+  [
     [2, 'a'],
     [1, 'b'],
   ]
@@ -34,7 +34,7 @@ If you plan on mapping `undefined` or `null` values, make sure [`strictNullCheck
 ```typescript
 import { biject } from 'biject';
 
-const example = biject(<const>[
+const example = biject([
   [1, 'one'],
   [2, 'two'],
   [3, 'three'],
@@ -48,13 +48,13 @@ example.invert('two') // -> 2
 Maps that are not bijective will throw compilation errors.
 ```typescript
 // Fails at compile-time.
-biject(<const>[
+biject([
   [1, 'a'],
   [1, 'b'],
 ]);
 
 // Fails at compile-time.
-biject(<const>[
+biject([
   [1, 'a'],
   [2, 'a'],
 ]);
@@ -62,7 +62,7 @@ biject(<const>[
 
 The type of query operations is known at compile-time.
 ```typescript
-const example = biject(<const>[
+const example = biject([
   ['kek', 3141],
   ['lel', 5],
   ['pip', 927],
@@ -76,21 +76,27 @@ const kek: 'kek' = example.invert(3141);
   const mapsTo: 3141 | 927 = example.map(element);
 }
 ```
-> :warning: Correct type inferrence only works if the type of the map given to `biject` exactly represents its run-time value. This is why `<const>` is required.  
+> :warning: Correct type inferrence only works if the type of the map given to `biject` exactly represents its run-time value.
 > Make sure to not reference any values that TypeScript infers as unions.  
 > :x: Avoid:
 > ```typescript
 > // Bad.
 > const union = 1 as 1 | 2;
-> biject(<const>[[union, 3]]);
+> biject([[union, 3]]);
 > ```
 > This might lead to run-time errors.
+>
+> If you are using [TypeScript < 5.0](https://github.com/microsoft/TypeScript/releases/tag/v5.0.2), the input must be explicitly marked `as const`.
+> ```typescript
+> biject([[1, "a"], [2, "b"]] as const)
+> ```
+> Since the introduction of [const type parameters](https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#const-type-parameters), this is not required anymore.
 
 ### Type-guards
 To check if a value is part of the map's domain or codomain (image), there are type-guards available.
 ```typescript
 // Define the bijection.
-const example = biject(<const>[
+const example = biject([
   ['a', 1],
   ['b', 2],
   ['c', 3],
@@ -118,7 +124,7 @@ type Codomain = 'a' | 'b' | 'c';
 
 // Fails at compile-time.
 biject<Domain, Codomain>()(
-  <const>[
+  [
     [1, 'c'],
     [3, 'a'],
   ]
@@ -126,7 +132,7 @@ biject<Domain, Codomain>()(
 
 // Fails at compile-time.
 biject<Domain, Codomain>()(
-  <const>[
+  [
     [1, 'c'],
     [1, 'b'],
     [3, 'a'],
@@ -135,7 +141,7 @@ biject<Domain, Codomain>()(
 
 // Compiles without error.
 biject<Domain, Codomain>()(
-  <const>[
+  [
     [1, 'c'],
     [2, 'b'],
     [3, 'a'],

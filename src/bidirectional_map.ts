@@ -1,4 +1,4 @@
-import { DomainElement, ImageElement, Pair, Pairs } from './utility/pairs';
+import { DomainElement, ImageElement, Pairs } from './utility/pairs';
 import { Index } from './utility/tuple';
 
 /**
@@ -18,7 +18,7 @@ type Invert<T extends Pairs> = T extends readonly [] ? T : (T extends readonly [
  * @example invert([[1, 'a'], [2, 'b']]) // => [['a', 1], ['b', 2]]
  */
 function invert<T extends Pairs>(pairs: T): Invert<T> {
-  return pairs.map(([left, right]) => <const>[right, left]) as Invert<T>;
+  return pairs.map(([left, right]) => [right, left] as const) as Invert<T>;
 }
 
 /**
@@ -54,7 +54,7 @@ type InverseValueOf<T extends Pairs, E> = Convert<{
  * Map that supports querying in both directions.
  * @template T Type of the map's pair array.
  */
-export class BidirectionalMap<T extends Pairs> {
+export class BidirectionalMap<const T extends Pairs> {
   /**
    * Underlying map from left to right.
    * @remarks Sets up querying from the input pairs' left side to its right side.

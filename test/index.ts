@@ -7,7 +7,7 @@ describe('biject', () => {
   it('asserts map to be a valid function', () => {
     biject(
       // @ts-expect-error Given map is not a valid function.
-      <const>[
+      [
         [1, 'c'],
         [2, 'a'],
         [1, 'b'],
@@ -16,7 +16,7 @@ describe('biject', () => {
 
     biject<1 | 2, 'a' | 'b' | 'c'>()(
       // @ts-expect-error Given map is not a valid function.
-      <const>[
+      [
         [1, 'c'],
         [2, 'a'],
         [1, 'b'],
@@ -25,7 +25,7 @@ describe('biject', () => {
 
     biject(
       // @ts-expect-error Given map is not a valid function.
-      <const>[
+      [
         [1, 'c'],
         [2, 'a'],
         [3, 'e'],
@@ -36,7 +36,7 @@ describe('biject', () => {
 
     biject<1 | 2 | 3, 'a' | 'b' | 'c' | 'd' | 'e'>()(
       // @ts-expect-error Given map is not a valid function.
-      <const>[
+      [
         [1, 'c'],
         [2, 'a'],
         [3, 'e'],
@@ -49,7 +49,7 @@ describe('biject', () => {
   it('asserts injectiveness', () => {
     biject(
       // @ts-expect-error Given map is not injective.
-      <const>[
+      [
         ['a', 1],
         ['b', 2],
         ['c', 1],
@@ -58,7 +58,7 @@ describe('biject', () => {
 
     biject<'a' | 'b' | 'c', 1 | 2 | 3>()(
       // @ts-expect-error Given map is not injective.
-      <const>[
+      [
         ['a', 1],
         ['b', 2],
         ['c', 1],
@@ -67,7 +67,7 @@ describe('biject', () => {
 
     biject(
       // @ts-expect-error Given map is not injective.
-      <const>[
+      [
         ['a', 1],
         ['b', 2],
         ['c', 1],
@@ -76,7 +76,7 @@ describe('biject', () => {
 
     biject<'a' | 'b' | 'c', 1 | 2>()(
       // @ts-expect-error Given map is not injective.
-      <const>[
+      [
         ['a', 1],
         ['b', 2],
         ['c', 1],
@@ -84,7 +84,7 @@ describe('biject', () => {
     );
 
     biject(
-      <const>[
+      [
         ['a', 3],
         ['b', 2],
         ['c', 1],
@@ -92,7 +92,7 @@ describe('biject', () => {
     );
 
     biject<'a' | 'b' | 'c', 1 | 2 | 3>()(
-      <const>[
+      [
         ['a', 3],
         ['b', 2],
         ['c', 1],
@@ -103,7 +103,7 @@ describe('biject', () => {
   it('asserts surjectiveness when codomain is given', () => {
     biject<'a' | 'b', 1 | 2 | 3>()(
       // @ts-expect-error Given map is not surjective.
-      <const>[
+      [
         ['a', 1],
         ['b', 2],
       ]
@@ -112,30 +112,30 @@ describe('biject', () => {
 
   it('enforces statically known map sizes', () => {
     biject(
-      // @ts-expect-error Array is not <const>.
+      // @ts-expect-error Array size is obfuscated.
       [
         [1, 'a'],
         [2, 'b'],
-      ]
+      ] as [number, string][]
     );
 
     biject<1 | 2, 'a' | 'b'>()(
-      // @ts-expect-error Array is not <const>.
+      // @ts-expect-error Array size is obfuscated.
       [
         [1, 'a'],
         [2, 'b'],
-      ]
+      ] as [1 | 2, 'a' | 'b'][]
     );
 
     biject(
-      <const>[
+      [
         [1, 'a'],
         [2, 'b'],
       ]
     );
 
     biject<1 | 2, 'a' | 'b'>()(
-      <const>[
+      [
         [1, 'a'],
         [2, 'b'],
       ]
@@ -146,7 +146,7 @@ describe('biject', () => {
     const union = 1 as 1 | 2;
     biject(
       // @ts-expect-error 2 is mapped twice.
-      <const>[
+      [
         [union, 5],
         [2, 6],
       ]
@@ -155,7 +155,7 @@ describe('biject', () => {
 
   it('supports undefined and null', () => {
     const bijection = biject(
-      <const>[
+      [
         [1, undefined],
         [2, null],
         [undefined, 3],
@@ -186,7 +186,7 @@ describe('biject', () => {
 
   it('infers the image type', () => {
     const bijection = biject<'a' | 'b' | 'c', 1 | 2 | 3>()(
-      <const>[
+      [
         ['a', 3],
         ['c', 2],
         ['b', 1],
@@ -198,7 +198,7 @@ describe('biject', () => {
 
   it('infers the domain type', () => {
     const bijection = biject<'a' | 'b' | 'c', 1 | 2 | 3>()(
-      <const>[
+      [
         ['a', 3],
         ['c', 2],
         ['b', 1],
@@ -212,7 +212,7 @@ describe('biject', () => {
 
   it('exposes a type guard for domain elements', () => {
     const bijection = biject(
-      <const>[
+      [
         [1, 'c'],
         [2, 'a'],
         [3, 2],
@@ -240,7 +240,7 @@ describe('biject', () => {
 
   it('exposes a type guard for image elements', () => {
     const bijection = biject(
-      <const>[
+      [
         [1, 'c'],
         [2, 'a'],
         [3, 2],
@@ -268,7 +268,7 @@ describe('biject', () => {
 
   it('handles null and undefined in type guards', () => {
     const bijection = biject(
-      <const>[
+      [
         [1, 'c'],
         [undefined, 2],
         [4, null],

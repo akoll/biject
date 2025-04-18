@@ -53,6 +53,7 @@ type AssertInjectiveness<T extends Pairs> = RemoveUniqueImageElements<T> extends
 /**
  * Asserts that the mapping given by a set of pairs is surjective in the sense that each type in {@link Codomain} appears on the right side of at least one mapping pair.
  * @template T Array of pairs to evaluate.
+ * @template Codomain The codomain (right side) of the map given as a union of element types.
  * @returns Type {@link T} if the mapping is surjective or an opaque object type containing an error message otherwise.
  */
 type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [ImageElement<T>] ? T : {
@@ -60,6 +61,14 @@ type AssertSurjectiveness<T extends Pairs, Codomain> = [Codomain] extends [Image
   'Some image elements (right side) are missing': Exclude<Codomain, ImageElement<T>>;
   errors: `Image element (right side) '${Extract<Exclude<Codomain, ImageElement<T>>, string | number | bigint | boolean | null | undefined>}' is missing (not mapped).`;
 };
+
+/**
+ * Asserts that the mapping given by a set of pairs is both injective and injective.
+ * @template T Array of pairs to evaluate.
+ * @template Codomain The codomain (right side) of the map given as a union of element types.
+ * @returns Type {@link T} if the mapping is injective and surjective or an opaque object type containing an error message otherwise.
+ */
+type AssertBijectiveness<T extends Pairs, Codomain> = T extends AssertInjectiveness<T> ? AssertSurjectiveness<T, Codomain> : AssertInjectiveness<T>;
 
 /**
  * Asserts that the size of a map given as an array of pairs can be inferred statically.
@@ -71,11 +80,12 @@ type AssertFixedLength<T extends readonly unknown[]> = number extends T['length'
 } : T;
 
 /**
- * Sets up a bijective map.
+ * Sets up a bijective map with inferred domain and codomain types.
  * @returns A {@link BidirectionalMap} of the given bijection.
- * @example new (biject())(<const>[[2, 'a'], [1, 'b']])
+ * @example biject([[2, 'a'], [1, 'b']])
  */
-export function biject<T extends Pairs>(
+export function biject<const T extends Pairs>(
+  // The codomain is inferred from the given pairs, thus, a surjectiveness check is not necessary as it cannot fail.
   pairs: AssertFixedLength<T> & AssertFunction<T> & AssertInjectiveness<T>
 ): BidirectionalMap<T>;
 
@@ -84,11 +94,11 @@ export function biject<T extends Pairs>(
  * @template Domain The domain (left side) of the map given as a union of element types.
  * @template Codomain The codomain (right side) of the map given as a union of element types.
  * @returns A function to set up a {@link BidirectionalMap} which only allows bijective maps between {@link Domain} and {@link Codomain} to be specified.
- * @example new (biject<1 | 2, 'a' | 'b'>())(<const>[[2, 'a'], [1, 'b']])
+ * @example new (biject<1 | 2, 'a' | 'b'>())([[2, 'a'], [1, 'b']])
  */
 // TODO: Once https://github.com/Microsoft/TypeScript/pull/26349 is applied, remove the unnecessary double paranthesis and infer `T` alongside `Domain` and `Codomain`.
-export function biject<Domain, Codomain>(): <T extends readonly (readonly [Domain, Codomain])[]>(
-  pairs: AssertFixedLength<T> & AssertFunction<T> & AssertInjectiveness<T> & AssertSurjectiveness<T, Codomain>
+export function biject<Domain, Codomain>(): <const T extends readonly (readonly [Domain, Codomain])[]>(
+  pairs: AssertFixedLength<T> & AssertFunction<T> & AssertBijectiveness<T, Codomain>
 ) => BidirectionalMap<T>;
 
 export function biject<T extends Pairs>(pairs?: T) {
